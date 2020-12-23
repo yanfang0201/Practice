@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<pre>
+			package om.yan.elm.dao;
+			
+			import java.sql.Connection;
+			import java.sql.PreparedStatement;
+			import java.sql.ResultSet;
+			import java.sql.SQLException;
+			import java.util.ArrayList;
+			import java.util.List;
+			
+			import om.yan.elm.domian.User;
+			import om.yan.elm.utils.JDBCUtil;
+			
+			public class UserDao {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+				
+				public User login(String loginName,String password) {
+					Connection conn=null;
+					PreparedStatement preparedStatement=null;
+					ResultSet resultSet=null;
+					User user=null;
+					
+					try {
+						conn=JDBCUtil.getConn();
+						preparedStatement=conn.prepareStatement("select * from user where loginname=? and password=?");
+						preparedStatement.setString(1, loginName);
+						preparedStatement.setString(2, password);
+						resultSet=preparedStatement.executeQuery();
+						if(resultSet.next()) {
+							user=new User();
+							user.setId(resultSet.getInt("id"));
+							user.setName(resultSet.getString("name"));
+							user.setPhone(resultSet.getString("phone"));
+							user.setHiredate(resultSet.getDate("hiredate"));
+							user.setRemark(resultSet.getString("remark"));
+							
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}finally {
+						JDBCUtil.close(resultSet, preparedStatement, conn);
+					}
+					return user;
+					
+				}
+				public List<User> query() {
+					List<User> users = new ArrayList<>();
+					Connection conn=null;
+					PreparedStatement prepareStatement=null;
+					ResultSet resultSet=null;
+					User user = null;
+					try {
+						conn = JDBCUtil.getConn();
+						prepareStatement = conn.prepareStatement("select *from user");
+						
+						resultSet = prepareStatement.executeQuery();
+						while(resultSet.next()) {
+							user = new User();
+							user.setId(resultSet.getInt("id"));
+							user.setName(resultSet.getString("name"));
+							user.setLoginName(resultSet.getString("loginName"));
+							user.setHiredate(resultSet.getDate("hiredate"));
+							user.setRemark(resultSet.getString("remark"));
+							
+							users.add(user);
+						}
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}finally {
+						JDBCUtil.close(resultSet, prepareStatement, conn);
+					}
+					
+					return users;
+				}
+			
+			}
+
+			
+		</pre>
+	</body>
+</html>
